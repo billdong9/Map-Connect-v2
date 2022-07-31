@@ -1,6 +1,7 @@
 {
     "name": "map-connect",
-    "version": "0.1.0",
+    "version": "2.0.0-alpha.1",
+    "author": "Bill Dong",
     "private": true,
     "scripts": {
         "serve": "vue-cli-service serve",
@@ -14,7 +15,9 @@
     "main": "background.js",
     "dependencies": {
         "core-js": "^3.8.3",
-        "vue": "^2.6.14"
+        "promise-socket": "^7.0.0",
+        "vue": "^2.6.14",
+        "vuetify": "^2.6.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.16",
@@ -26,8 +29,17 @@
         "electron-devtools-installer": "^3.1.0",
         "eslint": "^7.32.0",
         "eslint-plugin-vue": "^8.0.3",
+        "sass": "~1.32.0",
+        "sass-loader": "^10.0.0",
         "vue-cli-plugin-electron-builder": "~2.1.1",
-        "vue-template-compiler": "^2.6.14"
+        "vue-cli-plugin-vuetify": "~2.5.1",
+        "vue-template-compiler": "^2.6.14",
+        "vuetify-loader": "^1.7.0"
+    },
+    "overrides": {
+        "vue-cli-plugin-electron-builder": {
+            "electron-builder": "^23.0.3"
+        }
     },
     "eslintConfig": {
         "root": true,

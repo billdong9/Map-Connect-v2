@@ -1,4 +1,4 @@
-# map-connect
+# Map Connect v2
 
 ## Project setup
 ```
