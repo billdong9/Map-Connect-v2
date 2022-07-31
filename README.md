@@ -1,24 +1,2 @@
-# Map Connect v2
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+# Map Connect
+You can download Map Connect from the [Releases](https://github.com/18510047382/Map-Connect-v2/releases) page

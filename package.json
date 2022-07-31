@@ -1,6 +1,6 @@
 {
     "name": "map-connect",
-    "version": "2.0.0-alpha.1",
+    "version": "1.0.0",
     "author": "Bill Dong",
     "private": true,
     "scripts": {
