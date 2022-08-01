@@ -12,7 +12,13 @@ module.exports = defineConfig({
                     icon: "build/icons/icon.ico"
                 },
                 mac: {
-                    icon: "build/icons/icon.icns"
+                    icon: "build/icons/icon.icns",
+                    target: [
+                        {
+                            target: "dmg",
+                            arch: "x64"
+                        }
+                    ]
                 }
             }
         }
