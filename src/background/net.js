@@ -119,6 +119,9 @@ class Client {
             const response = JSON.parse(msg.toString()),
                 addr = this.getIPAddr(response.Addresses);
 
+            console.log(response);
+            console.log(addr);
+
             if (addr && response.Port) {
                 this.ipAddress = addr;
                 s.close();
@@ -205,13 +208,13 @@ class Client {
     }
 
     getIPAddr(addrs) {
+        let lastAddr;
         for (let i = 0; i < addrs.length; i++) {
             const regexp = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gi;
-            if (regexp.test(addrs[i])) {
-                return addrs[i];
-            }
+            if (addrs[i] == "127.0.0.1" || !regexp.test(addrs[i])) continue;
+            lastAddr = addrs[i];
         }
-        return false;
+        return lastAddr;
     }
 
     writeBool(val) {

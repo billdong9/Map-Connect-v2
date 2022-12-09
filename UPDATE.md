@@ -1,4 +1,3 @@
-1. timeout
-2. brakes
-3. port 15000 occupied problem
-4. 
+1. brakes
+2. reverse thrust (v2)
+3. remove connect api v1
