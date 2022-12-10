@@ -17,6 +17,7 @@ export default win => {
     })
 
     ipcMain.on("button operation", (e, actionID, val) => {
+        console.log('button', actionID, val)
         if (client.connected) {
             parseButtonAction(client, actionID, val);
         }
@@ -24,13 +25,13 @@ export default win => {
 }
 
 function parseButtonAction(client, actionID, val) {
-    // v1 patch
     switch (actionID) {
         case 'reversethrust':
-            client.runV1Cmd('Commands.ReverseThrust', [{
-                Name: "KeyAction",
-                Value: val ? 'Down' : 'Up'
-            }])
+            if(client.cmdList['aircraft/0/systems/reverse/state']) {
+                client.writeInt(client.cmdList['aircraft/0/systems/reverse/state'].id);
+                client.writeBool(true);
+                client.writeBool(val);
+            }
             break;
         default:
             client.runCmd(client.cmdList[actionCmdList[actionID]].id);
@@ -71,11 +72,13 @@ function establishConnection(client, win) {
         win.webContents.send("connected");
     }, (e) => {
         client.isError = true;
+        clearInterval(client.retriveManifestTimer);
         win.webContents.send("connect error", e);
     }, () => {
         if (client.isError || !client.connected) return;
         win.webContents.send("lose connection");
         client.connected = false;
+        clearInterval(client.retriveManifestTimer);
         establishConnection(client, win);
     })
 }
@@ -83,7 +86,6 @@ function establishConnection(client, win) {
 class Client {
     constructor() {
         this.client = null;
-        this.clientv1 = null;
         this.ipAddress = "";
         this.connected = false;
         this.isError = false;
@@ -92,6 +94,8 @@ class Client {
         this.totalManifestLen = 0;
         this.curManifestLen = 0;
         this.isGettingManifestDone = false;
+        this.retriveManifestTimer = null;
+        this.isFirstTimeGettingManifest = true;
     }
 
     connect(client, ip, port) {
@@ -100,7 +104,6 @@ class Client {
 
     establishConnection(success, error, close, logStatus = false) {
         this.client = null;
-        this.clientv1 = null;
         this.ipAddress = "";
         this.connected = false;
         this.cmdList = {};
@@ -108,6 +111,8 @@ class Client {
         this.totalManifestLen = 0;
         this.curManifestLen = 0;
         this.isGettingManifestDone = false;
+        this.retriveManifestTimer = null;
+        this.isFirstTimeGettingManifest = true;
 
         let s = dgram.createSocket('udp4');
         s.bind(15000);
@@ -151,7 +156,7 @@ class Client {
                         this.curManifestLen += chunk.length;
                         this.isGettingManifestDone = true;
                         for (let i in actionCmdList) {
-                            console.log(actionCmdList[i], this.manifestStr.includes(actionCmdList[i]))
+                            console.log(actionCmdList[i], this.manifestStr.includes(actionCmdList[i]));
                             if (!this.manifestStr.includes(actionCmdList[i])) {
                                 this.isGettingManifestDone = false;
                                 break;
@@ -166,25 +171,26 @@ class Client {
                         }
                         if (this.isGettingManifestDone) {
                             // call generate cmdList fn
-                            console.log('done 2');
+                            console.log('done');
                             this.generateCmdList();
-
-                            const newSocket = new net.Socket();
-                            newSocket.on('close', close);
-                            this.clientv1 = new PromiseSocket(newSocket);
-
-                            // Connect API V1
-                            this.connect(this.clientv1, this.ipAddress, 10111).then(async function () {
-                                console.log('done 1');
+                            if (this.isFirstTimeGettingManifest) {
                                 this.connected = true;
                                 success();
-                            }.bind(this)).catch((reason) => {
-                                this.connected = false;
-                                error(reason);
-                            })
+                                this.isFirstTimeGettingManifest = false;
+                            }
                         }
                     })
+
                     this.retrieveManifest();
+
+                    this.retriveManifestTimer = setInterval(() => {
+                        console.log("retrive manifest");
+                        this.manifestStr = '';
+                        this.totalManifestLen = 0;
+                        this.curManifestLen = 0;
+                        this.isGettingManifestDone = false;
+                        this.retrieveManifest();
+                    }, 20000);
                 }.bind(this)).catch((reason) => {
                     this.connected = false;
                     error(reason);
@@ -292,19 +298,6 @@ class Client {
     runCmd(commandID) {
         this.writeInt(commandID);
         this.writeBool(false);
-    }
-
-    runV1Cmd(cmd, params) {
-        const jsonStr = JSON.stringify({ "Command": cmd, "Parameters": params }),
-            data = new Uint8Array(jsonStr.length + 4);
-        data[0] = jsonStr.length;
-
-        for (let i = 0; i < jsonStr.length; i++) {
-            data[i + 4] = jsonStr.charCodeAt(i);
-        }
-
-        const buffer = Buffer.from(data);
-        this.clientv1.write(buffer);
     }
 
     retrieveManifest() {

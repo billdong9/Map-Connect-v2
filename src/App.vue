@@ -1,6 +1,6 @@
 <template>
     <v-app>
-        <NavBar @changePage="changePage"/>
+        <NavBar @changePage="changePage" />
 
         <v-main>
             <MainPage v-if="curPage === 'main'" :status="status" :errMsg="errMsg" @changePage="changePage" />
@@ -25,6 +25,30 @@ import TutorialPage from './components/pages/TutorialPage.vue';
 import actionListFn from './utils/file/actionList';
 import lastValCheck from './utils/action/lastValCheck';
 
+// DEBUG
+window.joy = {
+    id: 0,
+    name: "Test Joystick",
+    buttons: [{
+        pressed: false
+    }],
+    axes: [1]
+}
+let isReverse = false;
+setInterval(() => {
+    if (window.joy.axes[0] <= -1) {
+        isReverse = true;
+    }
+    if (window.joy.axes[0] >= 1) {
+        isReverse = false;
+    }
+    if (!isReverse) {
+        window.joy.axes = [window.joy.axes[0] - 0.01]
+    } else {
+        window.joy.axes = [window.joy.axes[0] + 0.01]
+    }
+}, 100)
+
 export default {
     name: 'App',
 
@@ -41,7 +65,8 @@ export default {
         status: 0,
         errMsg: '',
         actionList: {},
-        joysticksList: [],
+        // DEBUG
+        joysticksList: [window.joy],
         curPressedKeyForJoysticksPage: null
     }),
 
@@ -87,10 +112,8 @@ export default {
                 const assignments = this.actionList[i][3];
                 for (let a = 0; a < assignments.length; a++) {
                     if (assignments[a].type === 2 && assignments[a].id === e.key) {
-                        if (i === 'reversethrust') {
+                        if (lastValCheck(i, true)) {
                             ipcRenderer.send("button operation", i, true);
-                        } else {
-                            ipcRenderer.send("button operation", i);
                         }
                     }
                 }
@@ -106,8 +129,12 @@ export default {
             for (let i in this.actionList) {
                 const assignments = this.actionList[i][3];
                 for (let a = 0; a < assignments.length; a++) {
-                    if (assignments[a].type === 2 && assignments[a].id === e.key && i === 'reversethrust') {
-                        ipcRenderer.send("button operation", i, false);
+                    if (assignments[a].type === 2 && assignments[a].id === e.key) {
+                        // reset last value
+                        lastValCheck(i, false);
+                        if (i === 'reversethrust') {
+                            ipcRenderer.send("button operation", i, false);
+                        }
                     }
                 }
             }

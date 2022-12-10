@@ -1,5 +1,5 @@
 /*
-    必须与 actionList 保持一致
+    actionList = actionCmdList + optional commands / states
 */
 
 export default {
@@ -10,7 +10,6 @@ export default {
     flapsfullup: 'commands/FlapsFullUp',
     spoilers: 'commands/Spoilers',
     landinggear: 'commands/LandingGear',
-    reversethrust: 'commands/ReverseThrust',
     elevatortrimup: 'commands/ElevatorTrimUp',
     elevatortrimdown: 'commands/ElevatorTrimDown',
     landinglights: 'commands/LandingLights',

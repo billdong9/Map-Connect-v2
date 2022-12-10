@@ -15,7 +15,7 @@
             <v-col>
                 <v-alert color="cyan" elevation="2" colored-border icon="mdi-help-circle-outline" border="left">
                     <p><b>I have used Map Connect v1 before, do I still need to go through the tutorial?</b></p>
-                    <p>Yes. Because the usage of Map Connect v2 is completely different from v1.</p>
+                    <p>Yes. Because the way to use Map Connect v2 is completely different from v1.</p>
                 </v-alert>
             </v-col>
             <v-col>
@@ -29,6 +29,12 @@
             </v-col>
         </v-row>
         <v-row>
+            <v-col>
+                <v-alert color="cyan" elevation="2" colored-border icon="mdi-help-circle-outline" border="left">
+                    <p><b>What is an "unstable action"?</b></p>
+                    <p>An unstable action means that whenever you start a new flight, it may take a while (up to 30 seconds) for the action to refresh. During the refresh period, the action may not work. So we recommend you to wait 30 seconds every time you start a new flight.</p>
+                </v-alert>
+            </v-col>
             <v-col>
                 <v-alert color="cyan" elevation="2" colored-border icon="mdi-help-circle-outline" border="left">
                     <p><b>The game doesn't respond to my actions</b></p>
