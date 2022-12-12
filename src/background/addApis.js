@@ -58,7 +58,7 @@ export default () => {
         }
     })
     ipcMain.handle('setConfig', async (e, configObj) => {
-        
+        await fs.promises.writeFile(configFilePath, JSON.stringify(configObj));
         return true;
     })
 }

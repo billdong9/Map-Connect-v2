@@ -115,14 +115,13 @@ export default {
         },
         async getConfig() {
             this.config = await configFileFn.get();
+            this.$refs.UpdateDialog.config = this.config;
         },
         async autoUpdateCheck() {
             const appVersion = 'v' + await ipcRenderer.invoke('getVersion'),
                 latestVersion = await (await fetch(getVersionURL)).text();
 
-            console.log(this.config)
-
-            if (appVersion !== latestVersion) {
+            if (appVersion !== latestVersion && (!this.config.ignoreUpdate || this.config.ignoreUpdateVersion !== latestVersion)) {
                 // show update notification
                 console.log('update required', appVersion, latestVersion);
                 this.$refs.UpdateDialog.open(latestVersion);

@@ -31,11 +31,14 @@
 </template>
 
 <script>
+import configFileFn from './../../utils/file/config';
+
 export default {
     name: "UpdateDialog",
     data: () => ({
         show: false,
-        version: ''
+        version: '',
+        config: {}
     }),
     methods: {
         open(version) {
@@ -47,7 +50,9 @@ export default {
         },
         ignoreThisVersion() {
             this.close();
-            
+            this.config.ignoreUpdate = true;
+            this.config.ignoreUpdateVersion = this.version;
+            configFileFn.set(this.config);
         }
     }
 }
