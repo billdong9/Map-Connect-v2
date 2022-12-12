@@ -46,8 +46,8 @@ export default {
             this.show = false;
         },
         ignoreThisVersion() {
-            this.show = false;
-
+            this.close();
+            
         }
     }
 }

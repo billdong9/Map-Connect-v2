@@ -25,6 +25,7 @@ import TutorialPage from './components/pages/TutorialPage';
 import UpdateDialog from './components/modules/UpdateDialog';
 // utils
 import actionListFn from './utils/file/actionList';
+import configFileFn from './utils/file/config';
 import lastValCheck from './utils/action/lastValCheck';
 // vars
 import getVersionURL from './var/getVersionURL';
@@ -74,7 +75,8 @@ export default {
         actionList: {},
         // DEBUG
         joysticksList: [window.joy],
-        curPressedKeyForJoysticksPage: null
+        curPressedKeyForJoysticksPage: null,
+        config: {}
     }),
 
     methods: {
@@ -111,9 +113,14 @@ export default {
             this.actionList[action.id][3] = action.assignmentList;
             await actionListFn.set(this.actionList);
         },
+        async getConfig() {
+            this.config = await configFileFn.get();
+        },
         async autoUpdateCheck() {
             const appVersion = 'v' + await ipcRenderer.invoke('getVersion'),
                 latestVersion = await (await fetch(getVersionURL)).text();
+
+            console.log(this.config)
 
             if (appVersion !== latestVersion) {
                 // show update notification
@@ -236,6 +243,7 @@ export default {
         })
 
         this.getActionList();
+        this.getConfig();
 
         // auto update check
         this.autoUpdateCheck();
