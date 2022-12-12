@@ -64,6 +64,14 @@ function parseAxisAction(client, actionID, val) {
             client.writeBool(true);
             client.writeInt(val);
             break;
+
+        case 'leftbrake':
+            console.log(client.cmdList['aircraft/0/systems/brakes/left/percentage']);
+            break;
+
+        case 'rightbrake':
+
+            break;
     }
 }
 

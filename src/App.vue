@@ -7,10 +7,10 @@
             <JoysticksPage v-if="curPage === 'joysticks'" :actionList="actionList" :joysticksList="joysticksList"
                 :curPressedKey="curPressedKeyForJoysticksPage" @saveActionList="saveActionList" />
             <TutorialPage v-if="curPage === 'tutorial'" />
-            <!-- <button @click="status = 0">status = 0</button>
-            <button @click="status = 1">status = 1</button>
-            <button @click="status = 2; errMsg = 'Please do not open 2 apps at the same time!'">status = 2</button> -->
         </v-main>
+
+        <!-- audo update notification -->
+        <UpdateDialog ref="UpdateDialog"></UpdateDialog>
     </v-app>
 </template>
 
@@ -20,10 +20,16 @@ import NavBar from './components/NavBar';
 // import pages
 import MainPage from './components/pages/MainPage';
 import JoysticksPage from './components/pages/JoysticksPage';
-import TutorialPage from './components/pages/TutorialPage.vue';
+import TutorialPage from './components/pages/TutorialPage';
+// import modules
+import UpdateDialog from './components/modules/UpdateDialog';
 // utils
 import actionListFn from './utils/file/actionList';
 import lastValCheck from './utils/action/lastValCheck';
+// vars
+import getVersionURL from './var/getVersionURL';
+
+console.log('©️2022 Map Flight Studio. All Rights Reserved.');
 
 // DEBUG
 window.joy = {
@@ -56,7 +62,8 @@ export default {
         NavBar,
         MainPage,
         JoysticksPage,
-        TutorialPage
+        TutorialPage,
+        UpdateDialog
     },
 
     data: () => ({
@@ -103,6 +110,16 @@ export default {
         async saveActionList(action) {
             this.actionList[action.id][3] = action.assignmentList;
             await actionListFn.set(this.actionList);
+        },
+        async autoUpdateCheck() {
+            const appVersion = 'v' + await ipcRenderer.invoke('getVersion'),
+                latestVersion = await (await fetch(getVersionURL)).text();
+
+            if (appVersion !== latestVersion) {
+                // show update notification
+                console.log('update required', appVersion, latestVersion);
+                this.$refs.UpdateDialog.open(latestVersion);
+            }
         }
     },
 
@@ -198,7 +215,7 @@ export default {
                     }
                 }
             }
-        }, 30)
+        }, 25)
 
         ipcRenderer.on('connected', () => {
             this.status = 1;
@@ -219,6 +236,9 @@ export default {
         })
 
         this.getActionList();
+
+        // auto update check
+        this.autoUpdateCheck();
     }
 }
 </script>

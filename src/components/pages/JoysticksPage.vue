@@ -57,7 +57,7 @@
         </v-row>
         <v-row>
             <v-col>
-                <span class="text-h5">Action:</span>
+                <span class="text-h5">Actions:</span>
             </v-col>
         </v-row>
         <v-row>

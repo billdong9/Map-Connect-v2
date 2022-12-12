@@ -35,6 +35,9 @@ export default () => {
         await fs.promises.writeFile(dataPath, JSON.stringify(newActionList));
         return true;
     })
+    ipcMain.handle('getVersion', async () => {
+        return app.getVersion();
+    })
 }
 
 async function writeActionListFile(dataPath) {

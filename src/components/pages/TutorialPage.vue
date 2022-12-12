@@ -1,6 +1,6 @@
 <template>
     <v-container style="user-select: none;">
-        <v-row>
+        <v-row class="mt-5">
             <v-col>
                 <p class="text-h5">Tutorial</p>
                 <p><a href="https://community.infiniteflight.com/t/map-connect-v2-official-tutorial/706420/1" target="_blank">Open the official Map Connect tutorial in your browser <v-icon x-small>mdi-open-in-new</v-icon></a></p>
@@ -20,7 +20,7 @@
             </v-col>
             <v-col>
                 <v-alert color="cyan" elevation="2" colored-border icon="mdi-help-circle-outline" border="left">
-                    <p><b>How do I report problems (BUGs)?</b></p>
+                    <p><b>How do I report a problem (BUG)?</b></p>
                     <p>You can send an email to admin@map-flight.com to report the problem to us. If you are a
                         developer, you can submit an issue in our <a
                             href="https://github.com/18510047382/Map-Connect-v2" target="_blank">Github repository</a>.

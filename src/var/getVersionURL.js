@@ -1,0 +1,1 @@
+export default 'http://api2.map-flight.com/mapConnectVersion';
