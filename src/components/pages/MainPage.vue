@@ -49,7 +49,7 @@
                     Congratulations, Map Connect has successfully connected to Infinite Flight!
                     <br>
                     <br>
-                    <b>During the flight, please keep the focus of the computer in the Map Connect window and do not close the Map Connect window.</b>
+                    <b>During the flight, please keep the focus of the computer in the Map Connect window and do not close the window.</b>
                 </v-alert>
             </v-col>
 

@@ -5,6 +5,7 @@ import net from 'net';
 import { PromiseSocket } from 'promise-socket';
 import { ipcMain } from 'electron';
 import actionCmdList from './../var/actionCmdList';
+import actionUnstableCmdList from './../var/actionUnstableCmdList';
 
 export default win => {
     const client = new Client();
@@ -27,8 +28,8 @@ export default win => {
 function parseButtonAction(client, actionID, val) {
     switch (actionID) {
         case 'reversethrust':
-            if(client.cmdList['aircraft/0/systems/reverse/state']) {
-                client.writeInt(client.cmdList['aircraft/0/systems/reverse/state'].id);
+            if (client.cmdList[actionUnstableCmdList.reversethrust]) {
+                client.writeInt(client.cmdList[actionUnstableCmdList.reversethrust].id);
                 client.writeBool(true);
                 client.writeBool(val);
             }
@@ -66,11 +67,19 @@ function parseAxisAction(client, actionID, val) {
             break;
 
         case 'leftbrake':
-            console.log(client.cmdList['aircraft/0/systems/brakes/left/percentage']);
+            if (client.cmdList[actionUnstableCmdList.leftbrake]) {
+                client.writeInt(client.cmdList[actionUnstableCmdList.leftbrake].id);
+                client.writeBool(true);
+                client.writeFloat((val / 1024 + 1) / 2);
+            }
             break;
 
         case 'rightbrake':
-
+            if (client.cmdList[actionUnstableCmdList.rightbrake]) {
+                client.writeInt(client.cmdList[actionUnstableCmdList.rightbrake].id);
+                client.writeBool(true);
+                client.writeFloat((val / 1024 + 1) / 2);
+            }
             break;
     }
 }

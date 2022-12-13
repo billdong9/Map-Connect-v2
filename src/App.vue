@@ -33,29 +33,14 @@ import getVersionURL from './var/getVersionURL';
 
 console.log('©️2022 Map Flight Studio. All Rights Reserved.');
 
-// DEBUG
-window.joy = {
-    id: 0,
-    name: "Test Joystick",
-    buttons: [{
-        pressed: false
-    }],
-    axes: [1]
-}
-let isReverse = false;
-setInterval(() => {
-    if (window.joy.axes[0] <= -1) {
-        isReverse = true;
-    }
-    if (window.joy.axes[0] >= 1) {
-        isReverse = false;
-    }
-    if (!isReverse) {
-        window.joy.axes = [window.joy.axes[0] - 0.01]
-    } else {
-        window.joy.axes = [window.joy.axes[0] + 0.01]
-    }
-}, 100)
+// window.joy = {
+//     id: 0,
+//     name: "Test Joystick",
+//     buttons: [{
+//         pressed: false
+//     }],
+//     axes: [1]
+// }
 
 export default {
     name: 'App',
@@ -74,8 +59,7 @@ export default {
         status: 0,
         errMsg: '',
         actionList: {},
-        // DEBUG
-        joysticksList: [window.joy],
+        joysticksList: [],
         curPressedKeyForJoysticksPage: null,
         config: {}
     }),
