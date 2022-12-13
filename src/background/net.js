@@ -198,7 +198,7 @@ class Client {
                         this.curManifestLen = 0;
                         this.isGettingManifestDone = false;
                         this.retrieveManifest();
-                    }, 20000);
+                    }, 30000);
                 }.bind(this)).catch((reason) => {
                     this.connected = false;
                     error(reason);
