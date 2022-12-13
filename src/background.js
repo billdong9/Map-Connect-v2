@@ -54,6 +54,7 @@ async function createWindow() {
     errHandler(win);
     setMenu(win);
     networkHandler(win);
+    setAppTitle(win);
 }
 
 // Quit when all windows are closed.
@@ -90,4 +91,8 @@ if (isDevelopment) {
             app.quit()
         })
     }
+}
+
+function setAppTitle(win) {
+    win.setTitle('Map Connect v' + app.getVersion());
 }

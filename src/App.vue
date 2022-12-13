@@ -16,12 +16,13 @@
 
 <script>
 import { ipcRenderer } from 'electron';
-import NavBar from './components/NavBar';
+import { compareVersions } from 'compare-versions';
 // import pages
 import MainPage from './components/pages/MainPage';
 import JoysticksPage from './components/pages/JoysticksPage';
 import TutorialPage from './components/pages/TutorialPage';
 // import modules
+import NavBar from './components/modules/NavBar';
 import UpdateDialog from './components/modules/UpdateDialog';
 // utils
 import actionListFn from './utils/file/actionList';
@@ -121,7 +122,7 @@ export default {
             const appVersion = 'v' + await ipcRenderer.invoke('getVersion'),
                 latestVersion = await (await fetch(getVersionURL)).text();
 
-            if (appVersion !== latestVersion && (!this.config.ignoreUpdate || this.config.ignoreUpdateVersion !== latestVersion)) {
+            if (compareVersions(latestVersion, appVersion) > 0 && (!this.config.ignoreUpdate || this.config.ignoreUpdateVersion !== latestVersion)) {
                 // show update notification
                 console.log('update required', appVersion, latestVersion);
                 this.$refs.UpdateDialog.open(latestVersion);

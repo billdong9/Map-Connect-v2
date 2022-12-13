@@ -1,7 +1,7 @@
 <template>
     <v-app-bar app color="primary" dark>
         <div class="d-flex align-center">
-            <v-img class="shrink mr-2" contain src="./../assets/images/logo sq w.png" transition="scale-transition"
+            <v-img class="shrink mr-2" contain src="./../../assets/images/logo sq w.png" transition="scale-transition"
                 width="45"/>
         </div>
 
