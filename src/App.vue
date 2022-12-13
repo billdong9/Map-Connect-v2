@@ -10,7 +10,7 @@
         </v-main>
 
         <!-- audo update notification -->
-        <UpdateDialog ref="UpdateDialog"></UpdateDialog>
+        <UpdateDialog ref="UpdateDialog" />
     </v-app>
 </template>
 
