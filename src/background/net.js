@@ -23,6 +23,15 @@ export default win => {
             parseButtonAction(client, actionID, val);
         }
     })
+
+    ipcMain.on('refreshManifest', async () => {
+        console.log("retrive manifest");
+        client.manifestStr = '';
+        client.totalManifestLen = 0;
+        client.curManifestLen = 0;
+        client.isGettingManifestDone = false;
+        client.retrieveManifest();
+    })
 }
 
 function parseButtonAction(client, actionID, val) {
@@ -85,17 +94,15 @@ function parseAxisAction(client, actionID, val) {
 }
 
 function establishConnection(client, win) {
-    client.establishConnection(() => {
+    client.establishConnection(win, () => {
         win.webContents.send("connected");
     }, (e) => {
         client.isError = true;
-        clearInterval(client.retriveManifestTimer);
         win.webContents.send("connect error", e);
     }, () => {
         if (client.isError || !client.connected) return;
         win.webContents.send("lose connection");
         client.connected = false;
-        clearInterval(client.retriveManifestTimer);
         establishConnection(client, win);
     })
 }
@@ -111,7 +118,6 @@ class Client {
         this.totalManifestLen = 0;
         this.curManifestLen = 0;
         this.isGettingManifestDone = false;
-        this.retriveManifestTimer = null;
         this.isFirstTimeGettingManifest = true;
     }
 
@@ -119,7 +125,7 @@ class Client {
         return client.connect(parseInt(port), ip);
     }
 
-    establishConnection(success, error, close, logStatus = false) {
+    establishConnection(win, success, error, close, logStatus = false) {
         this.client = null;
         this.ipAddress = "";
         this.connected = false;
@@ -128,7 +134,6 @@ class Client {
         this.totalManifestLen = 0;
         this.curManifestLen = 0;
         this.isGettingManifestDone = false;
-        this.retriveManifestTimer = null;
         this.isFirstTimeGettingManifest = true;
 
         let s = dgram.createSocket('udp4');
@@ -194,20 +199,13 @@ class Client {
                                 this.connected = true;
                                 success();
                                 this.isFirstTimeGettingManifest = false;
+                            } else {
+                                win.webContents.send('refreshManifestComplete');
                             }
                         }
                     })
 
                     this.retrieveManifest();
-
-                    this.retriveManifestTimer = setInterval(() => {
-                        console.log("retrive manifest");
-                        this.manifestStr = '';
-                        this.totalManifestLen = 0;
-                        this.curManifestLen = 0;
-                        this.isGettingManifestDone = false;
-                        this.retrieveManifest();
-                    }, 30000);
                 }.bind(this)).catch((reason) => {
                     this.connected = false;
                     error(reason);
@@ -228,6 +226,7 @@ class Client {
                 dataType: item[1]
             }
         }
+        console.log(this.cmdList);
     }
 
     getIPAddr(addrs) {

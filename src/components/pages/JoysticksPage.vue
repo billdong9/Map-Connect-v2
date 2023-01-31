@@ -55,9 +55,9 @@
                 </v-card>
             </v-col>
         </v-row>
-        <v-row>
+        <v-row style="padding: 0 12px;">
             <v-col>
-                <span class="text-h5">Actions:</span>
+                <span style="display: inline-block;" class="text-h5">Actions:</span>
             </v-col>
         </v-row>
         <v-row>

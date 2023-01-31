@@ -32,7 +32,8 @@
             <v-col>
                 <v-alert color="cyan" elevation="2" colored-border icon="mdi-help-circle-outline" border="left">
                     <p><b>What is an "unstable action"?</b></p>
-                    <p>An unstable action means that whenever you start a new flight, it may take a while (up to 30 seconds) for the action to refresh. During the refresh period, the action may not work. So we recommend you to wait 30 seconds every time you start a new flight.</p>
+                    <p>Whenever you start a new flight, you need to click the "Refresh Manifest" button on the Main page for the unstable actions to work.</p>
+                    <p>After the refresh is complete, We recommend that you double check if these actions work properly before takeoff.</p>
                 </v-alert>
             </v-col>
             <v-col>

@@ -3,7 +3,7 @@
         <NavBar @changePage="changePage" />
 
         <v-main>
-            <MainPage v-if="curPage === 'main'" :status="status" :errMsg="errMsg" @changePage="changePage" />
+            <MainPage v-if="curPage === 'main'" ref="MainPage" :status="status" :errMsg="errMsg" @changePage="changePage" />
             <JoysticksPage v-if="curPage === 'joysticks'" :actionList="actionList" :joysticksList="joysticksList"
                 :curPressedKey="curPressedKeyForJoysticksPage" @saveActionList="saveActionList" />
             <TutorialPage v-if="curPage === 'tutorial'" />
@@ -224,6 +224,10 @@ export default {
 
         ipcRenderer.on('change page', (e, page) => {
             this.curPage = page;
+        })
+        
+        ipcRenderer.on('refreshManifestComplete', () => {
+            this.$refs.MainPage.gettingManifestDone();
         })
 
         this.getActionList();
