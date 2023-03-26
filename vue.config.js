@@ -7,6 +7,7 @@ module.exports = defineConfig({
         electronBuilder: {
             nodeIntegration: true,
             builderOptions: {
+                appId: "com.map-flight.mapconnect",
                 productName: "Map Connect",
                 win: {
                     icon: "build/icons/icon.ico"
@@ -14,7 +15,12 @@ module.exports = defineConfig({
                 // MAS DEV
                 // mac: {
                 //     icon: "build/icons/icon.icns",
-                //     target: "mas-dev",
+                //     target: [
+                //         {
+                //             target: "mas-dev",
+                //             arch: "x64"
+                //         }
+                //     ],
                 //     provisioningProfile: "build/mas/Map_Connect_Development.provisionprofile",
                 //     entitlements: "build/mas/entitlements.mac.plist",
                 //     entitlementsInherit: "build/mas/entitlements.mac.inherit.plist",
@@ -25,7 +31,12 @@ module.exports = defineConfig({
                 // MAS DIS
                 mac: {
                     icon: "build/icons/icon.icns",
-                    target: "mas",
+                    target: [
+                        {
+                            target: "mas",
+                            arch: "x64"
+                        }
+                    ],
                     provisioningProfile: "build/mas/Map_Connect_Distribution.provisionprofile",
                     entitlements: "build/mas/entitlements.mac.plist",
                     entitlementsInherit: "build/mas/entitlements.mac.inherit.plist",
