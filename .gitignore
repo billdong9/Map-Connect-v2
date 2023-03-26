@@ -2,6 +2,8 @@
 UPDATE.md
 node_modules
 /dist
+/build/mas/*
+Map Connect.app
 
 
 # local env files
