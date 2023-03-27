@@ -1,5 +1,6 @@
 'use strict'
 
+import path from 'path';
 import { app, protocol, BrowserWindow, shell, powerSaveBlocker } from 'electron'
 import { createProtocol } from 'vue-cli-plugin-electron-builder/lib'
 import installExtension, { VUEJS_DEVTOOLS } from 'electron-devtools-installer'
@@ -18,6 +19,8 @@ protocol.registerSchemesAsPrivileged([
 
 addApis();
 
+app.enableSandbox();
+
 async function createWindow() {
     // Create the browser window.
     const win = new BrowserWindow({
@@ -28,9 +31,10 @@ async function createWindow() {
         webPreferences: {
             // Use pluginOptions.nodeIntegration, leave this alone
             // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-            nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION,
-            contextIsolation: !process.env.ELECTRON_NODE_INTEGRATION,
-            backgroundThrottling: false
+            nodeIntegration: false,
+            contextIsolation: true,
+            backgroundThrottling: false,
+            preload: path.join(__dirname, '/preload.js')
         }
     })
 

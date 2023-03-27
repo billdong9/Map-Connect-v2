@@ -15,7 +15,6 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
 import { compareVersions } from 'compare-versions';
 // import pages
 import MainPage from './components/pages/MainPage';
@@ -24,14 +23,14 @@ import TutorialPage from './components/pages/TutorialPage';
 // import modules
 import NavBar from './components/modules/NavBar';
 import UpdateDialog from './components/modules/UpdateDialog';
-// utils
+// // utils
 import actionListFn from './utils/file/actionList';
 import configFileFn from './utils/file/config';
 import lastValCheck from './utils/action/lastValCheck';
-// vars
+// // vars
 import getVersionURL from './var/getVersionURL';
 
-console.log('©️2022 Map Flight Studio. All Rights Reserved.');
+console.log('©️2022-2023 Map Flight Studio. All Rights Reserved.');
 
 // window.joy = {
 //     id: 0,
@@ -41,6 +40,8 @@ console.log('©️2022 Map Flight Studio. All Rights Reserved.');
 //     }],
 //     axes: [1]
 // }
+
+const ipcRenderer = window.ipcRenderer;
 
 export default {
     name: 'App',
@@ -234,7 +235,7 @@ export default {
         this.getConfig();
 
         // auto update check
-        if (!process.mas) {
+        if (!window.versions.mas()) {
             this.autoUpdateCheck();
         } else {
             console.log("Auto update check diabled for MAS build.");

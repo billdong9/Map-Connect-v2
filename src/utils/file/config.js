@@ -1,4 +1,4 @@
-import { ipcRenderer } from 'electron';
+const ipcRenderer = window.ipcRenderer;
 
 export default {
     async get() {

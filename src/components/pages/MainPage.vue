@@ -90,7 +90,7 @@
 </template>
 
 <script>
-import { ipcRenderer } from 'electron';
+const ipcRenderer = window.ipcRenderer;
 
 export default {
     name: "MainPage",
