@@ -225,7 +225,7 @@ export default {
         ipcRenderer.on('change page', (e, page) => {
             this.curPage = page;
         })
-        
+
         ipcRenderer.on('refreshManifestComplete', () => {
             this.$refs.MainPage.gettingManifestDone();
         })
@@ -234,7 +234,11 @@ export default {
         this.getConfig();
 
         // auto update check
-        this.autoUpdateCheck();
+        if (!process.mas) {
+            this.autoUpdateCheck();
+        } else {
+            console.log("Auto update check diabled for MAS build.");
+        }
     }
 }
 </script>
