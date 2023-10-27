@@ -144,12 +144,12 @@ class Client {
 
         s.on('message', function (msg) {
             const response = JSON.parse(msg.toString()),
-                addr = this.getIPAddr(response.Addresses);
+                addr = this.getIPAddr(response.Addresses ? response.Addresses : response.addresses);
 
             console.log(response);
             console.log(addr);
 
-            if (addr && response.Port) {
+            if (addr && response.port) {
                 this.ipAddress = addr;
                 s.close();
 
