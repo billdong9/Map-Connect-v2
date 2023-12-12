@@ -1,8 +1,6 @@
-// Thanks to Gzhynko and Velocity23 for making InfiniteFlight.js :)
-
 import dgram from 'dgram';
 import net from 'net';
-import { PromiseSocket } from 'promise-socket';
+import { PromiseSocket, TimeoutError } from 'promise-socket';
 import { ipcMain } from 'electron';
 import actionCmdList from './../var/actionCmdList';
 import actionUnstableCmdList from './../var/actionUnstableCmdList';
@@ -121,10 +119,6 @@ class Client {
         this.isFirstTimeGettingManifest = true;
     }
 
-    connect(client, ip, port) {
-        return client.connect(parseInt(port), ip);
-    }
-
     establishConnection(win, success, error, close, logStatus = false) {
         this.client = null;
         this.ipAddress = "";
@@ -149,69 +143,87 @@ class Client {
             console.log(response);
             console.log(addr);
 
-            if (addr && response.port) {
+            if (addr && addr.length > 0 && (response.Port ? response.Port : response.port)) {
                 this.ipAddress = addr;
                 s.close();
 
-                const newSocket = new net.Socket();
-                newSocket.on('close', close);
-                this.client = new PromiseSocket(newSocket);
-
                 // Connect API V2
-                this.connect(this.client, this.ipAddress, 10112).then(async function () {
-                    // get manifest
-                    this.client.stream.on('data', chunk => {
-                        if (this.isGettingManifestDone || chunk.length < 12) return;
-                        if (chunk.slice(0, 4).equals(Buffer.from([0xff, 0xff, 0xff, 0xff]))) {
-                            this.manifestStr += this.parseResponseByType(chunk.slice(12), 4);
-                            this.totalManifestLen = parseInt(chunk.slice(8, 12).toString('hex').match(/.{2}/g).reverse().join(""), 16);
-                        } else {
-                            if (this.totalManifestLen === 0) {
-                                this.totalManifestLen = 0;
-                                this.curManifestLen = 0;
-                                this.isGettingManifestDone = false;
-                                this.retrieveManifest();
-                                return;
-                            }
-                            this.manifestStr += this.parseResponseByType(chunk, 4);
-                        }
-                        this.curManifestLen += chunk.length;
-                        this.isGettingManifestDone = true;
-                        for (let i in actionCmdList) {
-                            console.log(actionCmdList[i], this.manifestStr.includes(actionCmdList[i]));
-                            if (!this.manifestStr.includes(actionCmdList[i])) {
-                                this.isGettingManifestDone = false;
-                                break;
-                            }
-                        }
-                        if (!this.isGettingManifestDone && (this.curManifestLen - 12) >= this.totalManifestLen) {
-                            this.totalManifestLen = 0;
-                            this.curManifestLen = 0;
-                            this.isGettingManifestDone = false;
-                            this.retrieveManifest();
-                            return;
-                        }
-                        if (this.isGettingManifestDone) {
-                            // call generate cmdList fn
-                            console.log('done');
-                            this.generateCmdList();
-                            if (this.isFirstTimeGettingManifest) {
-                                this.connected = true;
-                                success();
-                                this.isFirstTimeGettingManifest = false;
-                            } else {
-                                win.webContents.send('refreshManifestComplete');
-                            }
-                        }
-                    })
-
-                    this.retrieveManifest();
-                }.bind(this)).catch((reason) => {
-                    this.connected = false;
-                    error(reason);
-                })
+                this.connect(0, win, success, error, close);
             }
         }.bind(this));
+    }
+
+    connect(ipIndex, win, success, error, close) {
+        console.log('connecting... ipIndex: ' + ipIndex);
+
+        const port = 10112,
+            newSocket = new net.Socket();
+
+        this.client = new PromiseSocket(newSocket);
+        this.client.setTimeout(5000);
+        this.client.connect(parseInt(port), this.ipAddress[ipIndex]).then(async function () {
+            // newSocket.on('close', close);
+
+            // get manifest
+            this.client.stream.on('data', chunk => {
+                if (this.isGettingManifestDone || chunk.length < 12) return;
+                if (chunk.slice(0, 4).equals(Buffer.from([0xff, 0xff, 0xff, 0xff]))) {
+                    this.manifestStr += this.parseResponseByType(chunk.slice(12), 4);
+                    this.totalManifestLen = parseInt(chunk.slice(8, 12).toString('hex').match(/.{2}/g).reverse().join(""), 16);
+                } else {
+                    if (this.totalManifestLen === 0) {
+                        this.totalManifestLen = 0;
+                        this.curManifestLen = 0;
+                        this.isGettingManifestDone = false;
+                        this.retrieveManifest();
+                        return;
+                    }
+                    this.manifestStr += this.parseResponseByType(chunk, 4);
+                }
+                this.curManifestLen += chunk.length;
+                this.isGettingManifestDone = true;
+                for (let i in actionCmdList) {
+                    console.log(actionCmdList[i], this.manifestStr.includes(actionCmdList[i]));
+                    if (!this.manifestStr.includes(actionCmdList[i])) {
+                        this.isGettingManifestDone = false;
+                        break;
+                    }
+                }
+                if (!this.isGettingManifestDone && (this.curManifestLen - 12) >= this.totalManifestLen) {
+                    this.totalManifestLen = 0;
+                    this.curManifestLen = 0;
+                    this.isGettingManifestDone = false;
+                    this.retrieveManifest();
+                    return;
+                }
+                if (this.isGettingManifestDone) {
+                    // call generate cmdList fn
+                    console.log('done');
+                    this.generateCmdList();
+                    if (this.isFirstTimeGettingManifest) {
+                        this.connected = true;
+                        this.isFirstTimeGettingManifest = false;
+                        // clear socket timeout
+                        this.client.setTimeout(0);
+                        success();
+                    } else {
+                        win.webContents.send('refreshManifestComplete');
+                    }
+                }
+            })
+
+            this.retrieveManifest();
+        }.bind(this)).catch((reason) => {
+            this.connected = false;
+            ipIndex++;
+            if (reason instanceof TimeoutError && this.ipAddress[ipIndex] != undefined && this.ipAddress[ipIndex] != null) {
+                newSocket.destroy();
+                this.connect(ipIndex, win, success, error, close);
+                return;
+            }
+            error(reason);
+        })
+
     }
 
     generateCmdList() {
@@ -230,13 +242,13 @@ class Client {
     }
 
     getIPAddr(addrs) {
-        let lastAddr;
+        let finalAddrs = [];
         for (let i = 0; i < addrs.length; i++) {
             const regexp = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gi;
             if (addrs[i] == "127.0.0.1" || !regexp.test(addrs[i])) continue;
-            lastAddr = addrs[i];
+            finalAddrs.push(addrs[i]);
         }
-        return lastAddr;
+        return finalAddrs.reverse();
     }
 
     writeBool(val) {

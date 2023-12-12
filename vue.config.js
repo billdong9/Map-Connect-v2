@@ -13,42 +13,42 @@ module.exports = defineConfig({
             builderOptions: {
                 appId: "com.map-flight.mapconnect",
                 productName: "Map Connect",
-                buildVersion: "1.1.4",
+                buildVersion: "1.2",
                 win: {
                     icon: "build/icons/icon.ico"
                 },
                 // MAS DEV
-                // mac: {
-                //     icon: "build/icons/icon.icns",
-                //     target: [
-                //         {
-                //             target: "mas-dev",
-                //             arch: "x64"
-                //         }
-                //     ],
-                //     provisioningProfile: "build/mas/Map_Connect_Development.provisionprofile",
-                //     entitlements: "build/mas/entitlements.mac.plist",
-                //     entitlementsInherit: "build/mas/entitlements.mac.inherit.plist",
-                //     hardenedRuntime: false,
-                //     gatekeeperAssess: false,
-                //     identity: null
-                // },
-                // MAS DIS
                 mac: {
                     icon: "build/icons/icon.icns",
                     target: [
                         {
-                            target: "mas",
+                            target: "mas-dev",
                             arch: "x64"
                         }
                     ],
-                    provisioningProfile: "build/mas/Map_Connect_Distribution.provisionprofile",
+                    provisioningProfile: "build/mas/Map_Connect_Development.provisionprofile",
                     entitlements: "build/mas/entitlements.mac.plist",
                     entitlementsInherit: "build/mas/entitlements.mac.inherit.plist",
                     hardenedRuntime: false,
                     gatekeeperAssess: false,
                     identity: null
                 },
+                // MAS DIS
+                // mac: {
+                //     icon: "build/icons/icon.icns",
+                //     target: [
+                //         {
+                //             target: "mas",
+                //             arch: "x64"
+                //         }
+                //     ],
+                //     provisioningProfile: "build/mas/Map_Connect_Distribution.provisionprofile",
+                //     entitlements: "build/mas/entitlements.mac.plist",
+                //     entitlementsInherit: "build/mas/entitlements.mac.inherit.plist",
+                //     hardenedRuntime: false,
+                //     gatekeeperAssess: false,
+                //     identity: null
+                // },
                 // DARWIN
                 // mac: {
                 //     icon: "build/icons/icon.icns",
