@@ -8,3 +8,5 @@ new Vue({
   vuetify,
   render: h => h(App)
 }).$mount('#app')
+
+console.log('©️2022-2024 Map Flight Studio. All Rights Reserved.');

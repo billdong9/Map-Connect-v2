@@ -30,8 +30,6 @@ import lastValCheck from './utils/action/lastValCheck';
 // // vars
 import getVersionURL from './var/getVersionURL';
 
-console.log('©️2022-2023 Map Flight Studio. All Rights Reserved.');
-
 // window.joy = {
 //     id: 0,
 //     name: "Test Joystick",
