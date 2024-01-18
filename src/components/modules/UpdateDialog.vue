@@ -6,10 +6,8 @@
             </v-card-title>
 
             <v-card-text>
-                <p>A new Map Connect version has been released, out of respect for your privacy, we will not force you
-                    to update to the new version.</p>
-                <p>However, we still recommend you to update, because the new version usually contains bug fixes and
-                    some new features.</p>
+                <p>Map Connect {{ version }} has been released.</p>
+                <p>We recommend that you update to the new version, as the new version often contains bug fixes and new features.</p>
             </v-card-text>
 
             <v-divider></v-divider>

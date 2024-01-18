@@ -158,12 +158,11 @@ class Client {
 
         const port = 10112,
             newSocket = new net.Socket();
+        newSocket.on('close', close);
 
         this.client = new PromiseSocket(newSocket);
         this.client.setTimeout(5000);
         this.client.connect(parseInt(port), this.ipAddress[ipIndex]).then(async function () {
-            // newSocket.on('close', close);
-
             // get manifest
             this.client.stream.on('data', chunk => {
                 if (this.isGettingManifestDone || chunk.length < 12) return;
@@ -248,7 +247,7 @@ class Client {
             if (addrs[i] == "127.0.0.1" || !regexp.test(addrs[i])) continue;
             finalAddrs.push(addrs[i]);
         }
-        return finalAddrs.reverse();
+        return finalAddrs;
     }
 
     writeBool(val) {

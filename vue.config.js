@@ -13,7 +13,7 @@ module.exports = defineConfig({
             builderOptions: {
                 appId: "com.map-flight.mapconnect",
                 productName: "Map Connect",
-                buildVersion: "1.2",
+                buildVersion: "1.3",
                 win: {
                     icon: "build/icons/icon.ico"
                 },

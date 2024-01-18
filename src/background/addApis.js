@@ -14,15 +14,15 @@ export default () => {
         if (fs.existsSync(actionListFilePath)) {
             const result = await fs.promises.readFile(actionListFilePath),
                 resultObj = JSON.parse(result.toString());
-
+                
             // action list file update check
             if (Object.keys(actionList).length !== Object.keys(resultObj).length) {
-                await writeActionListFile(actionListFilePath);
+                await writeActionListFile(actionListFilePath, resultObj);
                 return actionList;
             }
             for (let i in actionList) {
                 if (resultObj[i] === undefined || resultObj[i][0] !== actionList[i][0] || resultObj[i][1] !== actionList[i][1] || resultObj[i][2] !== actionList[i][2]) {
-                    await writeActionListFile(actionListFilePath);
+                    await writeActionListFile(actionListFilePath, resultObj);
                     return actionList;
                 }
             }
@@ -46,7 +46,7 @@ export default () => {
                 resultObj = JSON.parse(result.toString());
 
             // config file update check
-            if(JSON.stringify(Object.keys(resultObj)) !== JSON.stringify(Object.keys(configFile))) {
+            if (JSON.stringify(Object.keys(resultObj)) !== JSON.stringify(Object.keys(configFile))) {
                 await fs.promises.writeFile(configFilePath, JSON.stringify(configFile));
                 return configFile;
             }
@@ -63,9 +63,13 @@ export default () => {
     })
 }
 
-async function writeActionListFile(actionListFilePath) {
+async function writeActionListFile(actionListFilePath, oldActionList = {}) {
     // add assignment list to every action
     for (let i in actionList) {
+        if (oldActionList[i] !== null && oldActionList[i] !== undefined) {
+            actionList[i].push(oldActionList[i][3]);
+            continue;
+        }
         actionList[i].push([]);
     }
 
