@@ -161,7 +161,7 @@ class Client {
         newSocket.on('close', close);
 
         this.client = new PromiseSocket(newSocket);
-        this.client.setTimeout(5000);
+        this.client.setTimeout(3000);
         this.client.connect(parseInt(port), this.ipAddress[ipIndex]).then(async function () {
             // get manifest
             this.client.stream.on('data', chunk => {
@@ -247,6 +247,7 @@ class Client {
             if (addrs[i] == "127.0.0.1" || !regexp.test(addrs[i])) continue;
             finalAddrs.push(addrs[i]);
         }
+        finalAddrs.reverse()
         return finalAddrs;
     }
 
